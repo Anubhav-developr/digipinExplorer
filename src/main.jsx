@@ -15,18 +15,65 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const reset = (next) => { setMode(next); setResult(null); setError(''); setCopied(false); };
-  async function submit(e) {
-    e?.preventDefault(); setError(''); setResult(null); setBusy(true);
+ 
+async function submit(e) {
+  e?.preventDefault();
+  setError("");
+  setResult(null);
+  setBusy(true);
+
+  try {
+    const API_BASE = (import.meta.env.VITE_API_BASE_URL || "").replace(
+      /\/$/,
+      "",
+    );
+
+    const endpoint =
+      mode === "encode"
+        ? `${API_BASE}/api/digipin/encode`
+        : `${API_BASE}/api/digipin/decode`;
+
+    const payload =
+      mode === "encode"
+        ? {
+            latitude: Number(lat),
+            longitude: Number(lon),
+          }
+        : {
+            digipin: pin.trim().toUpperCase(),
+          };
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const text = await response.text();
+    let data;
+
     try {
-      const endpoint = mode === 'encode' ? '/api/digipin/encode' : '/api/digipin/decode';
-      const payload = mode === 'encode' ? { latitude: Number(lat), longitude: Number(lon) } : { digipin: pin.trim().toUpperCase() };
-      const response = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Something went wrong. Please try again.');
-      setResult(data);
-    } catch (err) { setError(err.message || 'Could not reach the DIGIPIN service.'); }
-    finally { setBusy(false); }
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(
+        `Backend returned an invalid response (HTTP ${response.status}). Check your Render URL and deployment.`,
+      );
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || "Something went wrong. Please try again.");
+    }
+
+    setResult(data);
+  } catch (err) {
+    setError(err.message || "Could not reach the DIGIPIN service.");
+  } finally {
+    setBusy(false);
   }
+}
+
   function locate() {
     setError('');
     if (!navigator.geolocation) { setError('Your browser does not support location.'); return; }
