@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapPin } from "lucide-react";
+import { MapPin , Check } from "lucide-react";
+
 
 const GRID = [
   ['F', 'C', '9', '8'],
