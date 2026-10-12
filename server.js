@@ -1,23 +1,124 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const { getDigiPin, getLatLngFromDigiPin } = require('./src/digipin-core');
+const express = require("express");
+const path = require("path");
+const cors = require("cors");
+const { getDigiPin, getLatLngFromDigiPin } = require("./src/digipin-core");
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'dist')));
-app.post('/api/digipin/encode', (req, res) => {
+app.use(express.static(path.join(__dirname, "dist")));
+app.post("/api/digipin/encode", (req, res) => {
   try {
-    const latitude = Number(req.body.latitude), longitude = Number(req.body.longitude);
-    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) throw new Error('Enter valid latitude and longitude.');
+    const latitude = Number(req.body.latitude),
+      longitude = Number(req.body.longitude);
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude))
+      throw new Error("Enter valid latitude and longitude.");
     res.json({ digipin: getDigiPin(latitude, longitude) });
-  } catch (e) { res.status(400).json({ error: e.message }); }
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
 });
-app.post('/api/digipin/decode', (req, res) => {
-  try { res.json(getLatLngFromDigiPin(String(req.body.digipin || ''))); }
-  catch (e) { res.status(400).json({ error: e.message }); }
+app.post("/api/digipin/decode", (req, res) => {
+  try {
+    res.json(getLatLngFromDigiPin(String(req.body.digipin || "")));
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
 });
-app.get('/api/health', (_req, res) => res.json({ ok: true, service: 'DIGIPIN Explorer' }));
-app.get('/{*splat}', (_req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
+app.post("/api/route", async (req, res) => {
+  try {
+    const apiKey = process.env.ORS_API_KEY;
+    if (!apiKey) {
+      return res
+        .status(503)
+        .json({
+          error:
+            "Routing is not configured yet. Add ORS_API_KEY to your Render backend environment variables, then redeploy.",
+        });
+    }
+    const fromDigipin = String(req.body.fromDigipin || "")
+      .trim()
+      .toUpperCase();
+    const toDigipin = String(req.body.toDigipin || "")
+      .trim()
+      .toUpperCase();
+    const preference =
+      req.body.preference === "fastest" ? "fastest" : "shortest";
+    const source = getLatLngFromDigiPin(fromDigipin);
+    const destination = getLatLngFromDigiPin(toDigipin);
+    const upstream = await fetch(
+      "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
+      {
+        method: "POST",
+        headers: {
+          Authorization: apiKey,
+          "Content-Type": "application/json",
+          Accept: "application/geo+json, application/json",
+        },
+        body: JSON.stringify({
+          coordinates: [
+            [Number(source.longitude), Number(source.latitude)],
+            [Number(destination.longitude), Number(destination.latitude)],
+          ],
+          preference,
+          instructions: false,
+          units: "m",
+        }),
+      },
+    );
+    const data = await upstream.json().catch(() => ({}));
+    if (!upstream.ok) {
+      const detail =
+        data?.error?.message ||
+        data?.message ||
+        "The routing provider rejected the request.";
+      return res
+        .status(upstream.status === 429 ? 429 : 502)
+        .json({ error: `Route service error: ${detail}` });
+    }
+    const feature = data?.features?.[0];
+    const summary = feature?.properties?.summary;
+    if (!feature?.geometry || !summary)
+      return res
+        .status(502)
+        .json({
+          error:
+            "The routing provider returned no road route for these locations.",
+        });
+    res.json({
+      fromDigipin,
+      toDigipin,
+      source: {
+        latitude: Number(source.latitude),
+        longitude: Number(source.longitude),
+      },
+      destination: {
+        latitude: Number(destination.latitude),
+        longitude: Number(destination.longitude),
+      },
+      geometry: feature.geometry,
+      summary: {
+        distance: Number(summary.distance),
+        duration: Number(summary.duration),
+      },
+      preference,
+    });
+  } catch (error) {
+    res
+      .status(400)
+      .json({
+        error:
+          error.message || "Unable to calculate a route for these DIGIPINs.",
+      });
+  }
+});
+
+app.get("/api/health", (_req, res) =>
+  res.json({ ok: true, service: "DIGIPIN Explorer" }),
+);
+app.get("/{*splat}", (_req, res) =>
+  res.sendFile(path.join(__dirname, "dist", "index.html")),
+);
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`DIGIPIN Explorer running on http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`DIGIPIN Explorer running on http://localhost:${PORT}`),
+);

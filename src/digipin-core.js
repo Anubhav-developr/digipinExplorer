@@ -59,7 +59,6 @@ const BOUNDS = {
  * Modifications : The DIGIPIN format would remain as 10-character continuous string w/o any punctuations.
  */
 function getDigiPin(lat, lon) {
-
   if (lat < BOUNDS.minLat || lat > BOUNDS.maxLat)
     throw new Error("Latitude out of range");
   if (lon < BOUNDS.minLon || lon > BOUNDS.maxLon)
@@ -114,12 +113,9 @@ function getDigiPin(lat, lon) {
  *  - No spaces, hyphens, or special characters permitted
  */
 function getLatLngFromDigiPin(digiPin) {
-
   // Validate input type
   if (typeof digiPin !== "string") {
-    throw new Error(
-      "Invalid DIGIPIN. DIGIPIN must be provided as a string."
-    );
+    throw new Error("Invalid DIGIPIN. DIGIPIN must be provided as a string.");
   }
 
   const pin = digiPin.trim().toUpperCase();
@@ -127,14 +123,14 @@ function getLatLngFromDigiPin(digiPin) {
   // Length validation
   if (pin.length !== 10) {
     throw new Error(
-      "Invalid DIGIPIN. DIGIPIN must be a continuous 10-character string."
+      "Invalid DIGIPIN. DIGIPIN must be a continuous 10-character string.",
     );
   }
 
   // Validate approved DIGIPIN character set
   if (!/^[23456789CJKLMPFT]{10}$/.test(pin)) {
     throw new Error(
-      "Invalid DIGIPIN. Only approved DIGIPIN characters (2,3,4,5,6,7,8,9,C,J,K,L,M,P,F,T) are permitted. Spaces, hyphens, and special characters are not allowed."
+      "Invalid DIGIPIN. Only approved DIGIPIN characters (2,3,4,5,6,7,8,9,C,J,K,L,M,P,F,T) are permitted. Spaces, hyphens, and special characters are not allowed.",
     );
   }
   let minLat = BOUNDS.minLat;
@@ -183,8 +179,7 @@ function getLatLngFromDigiPin(digiPin) {
 
   return {
     latitude: centerLat.toFixed(6),
-    longitude: centerLon.toFixed(6),  
-
+    longitude: centerLon.toFixed(6),
   };
 }
 
