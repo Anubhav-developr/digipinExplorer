@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { MapPin, ArrowRightLeft, Copy, Check, LocateFixed, ArrowUpRight, ShieldCheck, Compass, ScanLine, Navigation, Github, Menu, X, Sparkles, ChevronDown, ExternalLink, Languages, MessageCircle } from 'lucide-react';
 import './style.css';
+import DigipinTechnology from "./DigipinTechnology";
 import MapExplorer from './MapExplorer';
 
 const translations = {
@@ -434,104 +435,605 @@ function App() {
   const mapPoint = result ? (mode === 'encode' ? { latitude: Number(lat), longitude: Number(lon) } : { latitude: Number(result.latitude), longitude: Number(result.longitude) }) : null;
   const mapPin = result ? (mode === 'encode' ? result.digipin : pin.trim().toUpperCase()) : '';
   const apiBase = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
-  return <div className="app-shell">
-    {showIntro && <div className="india-post-intro" role="status" aria-label={t('DIGIPIN Explorer home')}>
-      <div className="intro-glow intro-glow-one"></div><div className="intro-glow intro-glow-two"></div>
-      <div className="intro-content">
-        <div className="intro-emblem"><img src="/indiapost-logo.webp" alt="India Post — भारतीय डाक" /></div>
-        <div className="intro-rule"><span></span><span></span><span></span></div>
-        <div className="intro-kicker">{t('DEPARTMENT OF POSTS · GOVERNMENT OF INDIA')}</div>
-        <h1 className="intro-title">{t('A new address for')} <span>{t('Digital India.')}</span></h1>
-        <div className="intro-digipin"><span className="intro-pin-icon"><MapPin size={17}/></span><span>DIGIPIN</span><i></i><b>EXPLORER</b></div>
-        <p className="intro-tagline">{t('Dak Sewa · Jan Sewa')}</p>
+  return (
+    <div className="app-shell">
+      {showIntro && (
+        <div
+          className="india-post-intro"
+          role="status"
+          aria-label={t("DIGIPIN Explorer home")}
+        >
+          <div className="intro-glow intro-glow-one"></div>
+          <div className="intro-glow intro-glow-two"></div>
+          <div className="intro-content">
+            <div className="intro-emblem">
+              <img src="/indiapost-logo.webp" alt="India Post — भारतीय डाक" />
+            </div>
+            <div className="intro-rule">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div className="intro-kicker">
+              {t("DEPARTMENT OF POSTS · GOVERNMENT OF INDIA")}
+            </div>
+            <h1 className="intro-title">
+              {t("A new address for")} <span>{t("Digital India.")}</span>
+            </h1>
+            <div className="intro-digipin">
+              <span className="intro-pin-icon">
+                <MapPin size={17} />
+              </span>
+              <span>DIGIPIN</span>
+              <i></i>
+              <b>EXPLORER</b>
+            </div>
+            <p className="intro-tagline">{t("Dak Sewa · Jan Sewa")}</p>
+          </div>
+          <div className="intro-bottom">
+            <span></span>
+            <small>{t("CONNECTING EVERY CORNER OF INDIA")}</small>
+            <span></span>
+          </div>
+        </div>
+      )}
+      <div className="announcement">
+        <span className="flag-dot"></span>{" "}
+        {t(
+          "A digital addressing initiative inspired by India’s geospatial future",
+        )}{" "}
+        <ArrowUpRight size={13} />
       </div>
-      <div className="intro-bottom"><span></span><small>{t('CONNECTING EVERY CORNER OF INDIA')}</small><span></span></div>
-    </div>}
-    <div className="announcement"><span className="flag-dot"></span> {t('A digital addressing initiative inspired by India’s geospatial future')} <ArrowUpRight size={13}/></div>
-    <header className="header">
-      <a className="brand" href="#" aria-label="DIGIPIN Explorer home">
-        <div className="brand-mark"><ScanLine size={25}/></div>
-        <div><div className="brand-name">DIGIPIN<span>EXPLORER</span></div><div className="brand-sub">{t('A location, made precise.')}</div></div>
-      </a>
-      <nav className={mobileOpen ? 'nav nav-open' : 'nav'}>
-        <a href="#explore" onClick={()=>setMobileOpen(false)}>{t('Explore')}</a><a href="#how-it-works" onClick={()=>setMobileOpen(false)}>{t('How it works')}</a><a href="#about" onClick={()=>setMobileOpen(false)}>{t('About DIGIPIN')}</a>
-        <a className="nav-source" href="https://github.com/INDIAPOST-gov/digipin" target="_blank" rel="noreferrer">{t('Official source')} <ExternalLink size={14}/></a>
-      </nav>
-      <div className="language-menu-wrap" ref={languageMenuRef}>
-        <button type="button" className="language-control" onClick={() => setLanguageOpen(open => !open)} aria-label={t('Choose language')} aria-expanded={languageOpen} aria-haspopup="menu">
-          <Languages className="language-globe" size={16}/><span className="language-current">{languageOptions.find(option => option.value === language)?.label || 'English'}</span><ChevronDown className={languageOpen ? 'language-chevron is-open' : 'language-chevron'} size={14}/>
+      <header className="header">
+        <a className="brand" href="#" aria-label="DIGIPIN Explorer home">
+          <div className="brand-mark">
+            <ScanLine size={25} />
+          </div>
+          <div>
+            <div className="brand-name">
+              DIGIPIN<span>EXPLORER</span>
+            </div>
+            <div className="brand-sub">{t("A location, made precise.")}</div>
+          </div>
+        </a>
+        <nav className={mobileOpen ? "nav nav-open" : "nav"}>
+          <a href="#explore" onClick={() => setMobileOpen(false)}>
+            {t("Explore")}
+          </a>
+          <a href="#how-it-works" onClick={() => setMobileOpen(false)}>
+            {t("How it works")}
+          </a>
+          <a href="#about" onClick={() => setMobileOpen(false)}>
+            {t("About DIGIPIN")}
+          </a>
+          <a
+            className="nav-source"
+            href="https://github.com/INDIAPOST-gov/digipin"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t("Official source")} <ExternalLink size={14} />
+          </a>
+        </nav>
+        <div className="language-menu-wrap" ref={languageMenuRef}>
+          <button
+            type="button"
+            className="language-control"
+            onClick={() => setLanguageOpen((open) => !open)}
+            aria-label={t("Choose language")}
+            aria-expanded={languageOpen}
+            aria-haspopup="menu"
+          >
+            <Languages className="language-globe" size={16} />
+            <span className="language-current">
+              {languageOptions.find((option) => option.value === language)
+                ?.label || "English"}
+            </span>
+            <ChevronDown
+              className={
+                languageOpen ? "language-chevron is-open" : "language-chevron"
+              }
+              size={14}
+            />
+          </button>
+          {languageOpen && (
+            <div
+              className="language-dropdown"
+              role="menu"
+              aria-label={t("Choose language")}
+            >
+              <div className="language-dropdown-heading">
+                {t("Choose language")}
+              </div>
+              {languageOptions.map((option) => (
+                <button
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={language === option.value}
+                  key={option.value}
+                  className={`language-option ${language === option.value ? "selected" : ""}`}
+                  onClick={() => {
+                    changeLanguage(option.value);
+                    setLanguageOpen(false);
+                  }}
+                >
+                  <span className="language-option-copy">
+                    <strong>{option.label}</strong>
+                    <small>{option.native}</small>
+                  </span>
+                  {language === option.value && <Check size={16} />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <button
+          className="mobile-toggle"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-label={t("Toggle navigation")}
+        >
+          {mobileOpen ? <X /> : <Menu />}
         </button>
-        {languageOpen && <div className="language-dropdown" role="menu" aria-label={t('Choose language')}>
-          <div className="language-dropdown-heading">{t('Choose language')}</div>
-          {languageOptions.map(option => <button type="button" role="menuitemradio" aria-checked={language === option.value} key={option.value} className={`language-option ${language === option.value ? 'selected' : ''}`} onClick={() => { changeLanguage(option.value); setLanguageOpen(false); }}>
-            <span className="language-option-copy"><strong>{option.label}</strong><small>{option.native}</small></span>
-            {language === option.value && <Check size={16} />}
-          </button>)}
-        </div>}
-      </div>
-      <button className="mobile-toggle" onClick={()=>setMobileOpen(!mobileOpen)} aria-label={t('Toggle navigation')}>{mobileOpen?<X/>:<Menu/>}</button>
-    </header>
+      </header>
 
-    <main>
-      <section className="hero">
-        <div className="hero-copy">
-          <div className="eyebrow"><span className="eyebrow-icon"><Compass size={14}/></span> {t('THE NEW LANGUAGE OF LOCATION')}</div>
-          <h1>{t('Every place has a story.')}<br/><span>{t('Give it an address.')}</span></h1>
-          <p className="hero-description">{t('Turn coordinates into a precise digital address. Explore India’s geospatial grid with DIGIPIN — built to make every location easier to identify and share.')}</p>
-          <div className="hero-actions"><a className="button button-primary" href="#explore">{t('Find your DIGIPIN')} <ArrowRightLeft size={17}/></a><a className="text-link" href="#how-it-works">{t('Discover how it works')} <ArrowUpRight size={16}/></a></div>
-          <div className="trust-row"><div className="trust-icon"><ShieldCheck size={17}/></div><span>{t('Open-source technology')}</span><i></i><span>{t('10-character location code')}</span></div>
-        </div>
-        <div className="hero-art" aria-label={t('Illustration of a digital location grid')}>
-          <div className="art-orbit orbit-one"></div><div className="art-orbit orbit-two"></div>
-          <div className="map-grid">
-            {Array.from({length:81},(_,i)=><div key={i} className={`grid-cell ${[13,14,22,23,24,31,32,33,40,41,42,49,50,58].includes(i)?'cell-lit':''} ${[31,32,40,41,42,49,50].includes(i)?'cell-hot':''}`}></div>)}
+      <main>
+        <section className="hero">
+          <div className="hero-copy">
+            <div className="eyebrow">
+              <span className="eyebrow-icon">
+                <Compass size={14} />
+              </span>{" "}
+              {t("THE NEW LANGUAGE OF LOCATION")}
+            </div>
+            <h1>
+              {t("Every place has a story.")}
+              <br />
+              <span>{t("Give it an address.")}</span>
+            </h1>
+            <p className="hero-description">
+              {t(
+                "Turn coordinates into a precise digital address. Explore India’s geospatial grid with DIGIPIN — built to make every location easier to identify and share.",
+              )}
+            </p>
+            <div className="hero-actions">
+              <a className="button button-primary" href="#explore">
+                {t("Find your DIGIPIN")} <ArrowRightLeft size={17} />
+              </a>
+              <a className="text-link" href="#how-it-works">
+                {t("Discover how it works")} <ArrowUpRight size={16} />
+              </a>
+            </div>
+            <div className="trust-row">
+              <div className="trust-icon">
+                <ShieldCheck size={17} />
+              </div>
+              <span>{t("Open-source technology")}</span>
+              <i></i>
+              <span>{t("10-character location code")}</span>
+            </div>
           </div>
-          <div className="pin-bubble"><MapPin size={23} fill="currentColor"/></div>
-          <div className="coordinate-chip"><span className="live-dot"></span><div><small>{t('LOCATION FOUND')}</small><b>28.6139° N, 77.2090° E</b></div></div>
-          <div className="code-chip"><div className="code-icon"><ScanLine size={18}/></div><div><small>{t('YOUR DIGITAL ADDRESS')}</small><b>DIGIPIN <span>{t('PREVIEW')}</span></b></div><div className="code-bars"><i/><i/><i/><i/><i/><i/><i/></div></div>
-          <div className="art-label label-top">{t('INDIA · GRID 01')}</div><div className="art-label label-bottom">{t('PRECISION IN EVERY POINT')}</div>
-        </div>
-      </section>
+          <div
+            className="hero-art"
+            aria-label={t("Illustration of a digital location grid")}
+          >
+            <div className="art-orbit orbit-one"></div>
+            <div className="art-orbit orbit-two"></div>
+            <div className="map-grid">
+              {Array.from({ length: 81 }, (_, i) => (
+                <div
+                  key={i}
+                  className={`grid-cell ${[13, 14, 22, 23, 24, 31, 32, 33, 40, 41, 42, 49, 50, 58].includes(i) ? "cell-lit" : ""} ${[31, 32, 40, 41, 42, 49, 50].includes(i) ? "cell-hot" : ""}`}
+                ></div>
+              ))}
+            </div>
+            <div className="pin-bubble">
+              <MapPin size={23} fill="currentColor" />
+            </div>
+            <div className="coordinate-chip">
+              <span className="live-dot"></span>
+              <div>
+                <small>{t("LOCATION FOUND")}</small>
+                <b>28.6139° N, 77.2090° E</b>
+              </div>
+            </div>
+            <div className="code-chip">
+              <div className="code-icon">
+                <ScanLine size={18} />
+              </div>
+              <div>
+                <small>{t("YOUR DIGITAL ADDRESS")}</small>
+                <b>
+                  DIGIPIN <span>{t("PREVIEW")}</span>
+                </b>
+              </div>
+              <div className="code-bars">
+                <i />
+                <i />
+                <i />
+                <i />
+                <i />
+                <i />
+                <i />
+              </div>
+            </div>
+            <div className="art-label label-top">{t("INDIA · GRID 01")}</div>
+            <div className="art-label label-bottom">
+              {t("PRECISION IN EVERY POINT")}
+            </div>
+          </div>
+        </section>
 
-      <section className="explorer-section" id="explore">
-        <div className="section-heading"><div><div className="eyebrow">{t('YOUR LOCATION, DECODED')}</div><h2>{t('Explore DIGIPIN')}</h2><p>{t('Generate a code from coordinates, or decode a code to find its location.')}</p></div><div className="section-stamp"><Sparkles size={16}/> {t('Simple. Precise. Shareable.')}</div></div>
-        <div className="workspace">
-          <div className="form-panel">
-            <div className="tabs"><button className={mode==='encode'?'tab active':'tab'} onClick={()=>reset('encode')}><MapPin size={16}/> {t('Generate DIGIPIN')}</button><button className={mode==='decode'?'tab active':'tab'} onClick={()=>reset('decode')}><ScanLine size={16}/> {t('Decode a code')}</button></div>
-            <form onSubmit={submit}>
-              {mode==='encode' ? <>
-                <div className="field-heading"><span className="step-number">01</span><div><b>{t('Enter coordinates')}</b><small>{t('Use a latitude and longitude pair.')}</small></div><button type="button" className={`locate-button ${locating ? 'locating' : ''} ${locationMessage ? 'located' : ''}`} onClick={locate} disabled={locating}><span className="locate-icon-wrap">{locating ? <span className="location-spinner"/> : locationMessage ? <Check size={15}/> : <LocateFixed size={15}/>}</span>{locating ? t('Finding you…') : locationMessage || t('Use my location')}</button></div>
-                <div className="input-grid">
-                  <label>{t('Latitude')} <span>° N / S</span><input inputMode="decimal" value={lat} onChange={e=>setLat(e.target.value)} placeholder={t('e.g. 28.6139')} required/></label>
-                  <label>{t('Longitude')} <span>° E / W</span><input inputMode="decimal" value={lon} onChange={e=>setLon(e.target.value)} placeholder={t('e.g. 77.2090')} required/></label>
+        <section className="explorer-section" id="explore">
+          <div className="section-heading">
+            <div>
+              <div className="eyebrow">{t("YOUR LOCATION, DECODED")}</div>
+              <h2>{t("Explore DIGIPIN")}</h2>
+              <p>
+                {t(
+                  "Generate a code from coordinates, or decode a code to find its location.",
+                )}
+              </p>
+            </div>
+            <div className="section-stamp">
+              <Sparkles size={16} /> {t("Simple. Precise. Shareable.")}
+            </div>
+          </div>
+          <div className="workspace">
+            <div className="form-panel">
+              <div className="tabs">
+                <button
+                  className={mode === "encode" ? "tab active" : "tab"}
+                  onClick={() => reset("encode")}
+                >
+                  <MapPin size={16} /> {t("Generate DIGIPIN")}
+                </button>
+                <button
+                  className={mode === "decode" ? "tab active" : "tab"}
+                  onClick={() => reset("decode")}
+                >
+                  <ScanLine size={16} /> {t("Decode a code")}
+                </button>
+              </div>
+              <form onSubmit={submit}>
+                {mode === "encode" ? (
+                  <>
+                    <div className="field-heading">
+                      <span className="step-number">01</span>
+                      <div>
+                        <b>{t("Enter coordinates")}</b>
+                        <small>{t("Use a latitude and longitude pair.")}</small>
+                      </div>
+                      <button
+                        type="button"
+                        className={`locate-button ${locating ? "locating" : ""} ${locationMessage ? "located" : ""}`}
+                        onClick={locate}
+                        disabled={locating}
+                      >
+                        <span className="locate-icon-wrap">
+                          {locating ? (
+                            <span className="location-spinner" />
+                          ) : locationMessage ? (
+                            <Check size={15} />
+                          ) : (
+                            <LocateFixed size={15} />
+                          )}
+                        </span>
+                        {locating
+                          ? t("Finding you…")
+                          : locationMessage || t("Use my location")}
+                      </button>
+                    </div>
+                    <div className="input-grid">
+                      <label>
+                        {t("Latitude")} <span>° N / S</span>
+                        <input
+                          inputMode="decimal"
+                          value={lat}
+                          onChange={(e) => setLat(e.target.value)}
+                          placeholder={t("e.g. 28.6139")}
+                          required
+                        />
+                      </label>
+                      <label>
+                        {t("Longitude")} <span>° E / W</span>
+                        <input
+                          inputMode="decimal"
+                          value={lon}
+                          onChange={(e) => setLon(e.target.value)}
+                          placeholder={t("e.g. 77.2090")}
+                          required
+                        />
+                      </label>
+                    </div>
+                    <div className="input-hint">
+                      <span className="hint-dot"></span>{" "}
+                      {t(
+                        "India grid coverage: approximately 2.5°–38.5° N and 63.5°–99.5° E.",
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="field-heading">
+                      <span className="step-number">01</span>
+                      <div>
+                        <b>{t("Enter a DIGIPIN code")}</b>
+                        <small>
+                          {t("Use the continuous 10-character code.")}
+                        </small>
+                      </div>
+                    </div>
+                    <label className="full-label">
+                      DIGIPIN <span>{t("10 characters")}</span>
+                      <input
+                        className="pin-input"
+                        value={pin}
+                        onChange={(e) =>
+                          setPin(
+                            e.target.value
+                              .toUpperCase()
+                              .replace(/[^23456789CJKLMPFT]/g, ""),
+                          )
+                        }
+                        placeholder={t("e.g. 4T396F42L7")}
+                        maxLength={10}
+                        required
+                      />
+                    </label>
+                    <div className="input-hint">
+                      <span className="hint-dot"></span>{" "}
+                      {t(
+                        "Accepted characters: 2–9, C, J, K, L, M, P, F and T.",
+                      )}
+                    </div>
+                  </>
+                )}
+                {error && (
+                  <div className="error-message" role="alert">
+                    {error}
+                  </div>
+                )}
+                <button
+                  className="button button-submit"
+                  type="submit"
+                  disabled={busy}
+                >
+                  {busy
+                    ? t("Working…")
+                    : mode === "encode"
+                      ? t("Generate my DIGIPIN")
+                      : t("Find this location")}{" "}
+                  <ArrowUpRight size={17} />
+                </button>
+              </form>
+            </div>
+            <div className="result-panel">
+              {!result ? (
+                <div className="empty-result">
+                  <div className="result-illustration">
+                    <div className="result-ring ring-a"></div>
+                    <div className="result-ring ring-b"></div>
+                    <div className="result-pin">
+                      <MapPin size={28} />
+                    </div>
+                    <span className="spark spark-a">✳</span>
+                    <span className="spark spark-b">✦</span>
+                  </div>
+                  <div className="result-kicker">
+                    {t("YOUR RESULT WILL APPEAR HERE")}
+                  </div>
+                  <h3>{t("Ready when you are.")}</h3>
+                  <p>
+                    {t(
+                      "Enter your details and we’ll translate your location into a digital address.",
+                    )}
+                  </p>
+                  <div className="result-footer">
+                    <span>
+                      <ShieldCheck size={14} />{" "}
+                      {t("Processed using the official open-source algorithm")}
+                    </span>
+                  </div>
                 </div>
-                <div className="input-hint"><span className="hint-dot"></span> {t('India grid coverage: approximately 2.5°–38.5° N and 63.5°–99.5° E.')}</div>
-              </> : <>
-                <div className="field-heading"><span className="step-number">01</span><div><b>{t('Enter a DIGIPIN code')}</b><small>{t('Use the continuous 10-character code.')}</small></div></div>
-                <label className="full-label">DIGIPIN <span>{t('10 characters')}</span><input className="pin-input" value={pin} onChange={e=>setPin(e.target.value.toUpperCase().replace(/[^23456789CJKLMPFT]/g,''))} placeholder={t('e.g. 4T396F42L7')} maxLength={10} required/></label>
-                <div className="input-hint"><span className="hint-dot"></span> {t('Accepted characters: 2–9, C, J, K, L, M, P, F and T.')}</div>
-              </>}
-              {error && <div className="error-message" role="alert">{error}</div>}
-              <button className="button button-submit" type="submit" disabled={busy}>{busy?t('Working…'):mode==='encode'?t('Generate my DIGIPIN'):t('Find this location')} <ArrowUpRight size={17}/></button>
-            </form>
+              ) : (
+                <div className="success-result">
+                  <div className="success-top">
+                    <span className="success-badge">
+                      <Check size={14} /> {t("SUCCESS")}
+                    </span>
+                    <span className="result-kicker">
+                      {t("YOUR LOCATION IS READY")}
+                    </span>
+                  </div>
+                  {mode === "encode" ? (
+                    <>
+                      <div className="result-kicker result-title">
+                        {t("YOUR DIGIPIN")}
+                      </div>
+                      <div className="generated-pin">{result.digipin}</div>
+                      <p className="result-explain">
+                        {t(
+                          "Your 10-character digital location code is ready to copy and share.",
+                        )}
+                      </p>
+                      <div className="result-actions">
+                        <button
+                          className="button copy-button"
+                          onClick={() => copy(result.digipin)}
+                        >
+                          <Copy size={16} />
+                          {copied ? t("Copied!") : t("Copy DIGIPIN")}
+                        </button>
+                        <button
+                          className="button whatsapp-button"
+                          onClick={shareOnWhatsApp}
+                        >
+                          <MessageCircle size={17} />
+                          {t("Share on WhatsApp")}
+                        </button>
+                      </div>
+                      <div className="result-meta">
+                        <span>{t("COORDINATES")}</span>
+                        <b>
+                          {Number(lat).toFixed(6)}, {Number(lon).toFixed(6)}
+                        </b>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="result-kicker result-title">
+                        {t("LOCATION COORDINATES")}
+                      </div>
+                      <div className="decoded-coords">
+                        {Number(result.latitude).toFixed(6)}
+                        <small>{t("LAT")}</small>
+                      </div>
+                      <div className="decoded-coords">
+                        {Number(result.longitude).toFixed(6)}
+                        <small>{t("LON")}</small>
+                      </div>
+                      <p className="result-explain">
+                        {t(
+                          "These coordinates represent the centre point of the DIGIPIN grid cell.",
+                        )}
+                      </p>
+                      <div className="result-actions">
+                        <button
+                          className="button copy-button"
+                          onClick={() => copy(coords)}
+                        >
+                          <Copy size={16} />
+                          {copied ? t("Copied!") : t("Copy coordinates")}
+                        </button>
+                        <button
+                          className="button whatsapp-button"
+                          onClick={shareOnWhatsApp}
+                        >
+                          <MessageCircle size={17} />
+                          {t("Share on WhatsApp")}
+                        </button>
+                      </div>
+                      <a
+                        className="map-link"
+                        href={`https://www.google.com/maps?q=${result.latitude},${result.longitude}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <Navigation size={15} /> {t("Open in Google Maps")}{" "}
+                        <ArrowUpRight size={14} />
+                      </a>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="result-panel">
-            {!result ? <div className="empty-result"><div className="result-illustration"><div className="result-ring ring-a"></div><div className="result-ring ring-b"></div><div className="result-pin"><MapPin size={28}/></div><span className="spark spark-a">✳</span><span className="spark spark-b">✦</span></div><div className="result-kicker">{t('YOUR RESULT WILL APPEAR HERE')}</div><h3>{t('Ready when you are.')}</h3><p>{t('Enter your details and we’ll translate your location into a digital address.')}</p><div className="result-footer"><span><ShieldCheck size={14}/> {t('Processed using the official open-source algorithm')}</span></div></div> :
-              <div className="success-result"><div className="success-top"><span className="success-badge"><Check size={14}/> {t('SUCCESS')}</span><span className="result-kicker">{t('YOUR LOCATION IS READY')}</span></div>
-                {mode==='encode' ? <><div className="result-kicker result-title">{t('YOUR DIGIPIN')}</div><div className="generated-pin">{result.digipin}</div><p className="result-explain">{t('Your 10-character digital location code is ready to copy and share.')}</p><div className="result-actions"><button className="button copy-button" onClick={()=>copy(result.digipin)}><Copy size={16}/>{copied?t('Copied!'):t('Copy DIGIPIN')}</button><button className="button whatsapp-button" onClick={shareOnWhatsApp}><MessageCircle size={17}/>{t('Share on WhatsApp')}</button></div><div className="result-meta"><span>{t('COORDINATES')}</span><b>{Number(lat).toFixed(6)}, {Number(lon).toFixed(6)}</b></div></> :
-                <><div className="result-kicker result-title">{t('LOCATION COORDINATES')}</div><div className="decoded-coords">{Number(result.latitude).toFixed(6)}<small>{t('LAT')}</small></div><div className="decoded-coords">{Number(result.longitude).toFixed(6)}<small>{t('LON')}</small></div><p className="result-explain">{t('These coordinates represent the centre point of the DIGIPIN grid cell.')}</p><div className="result-actions"><button className="button copy-button" onClick={()=>copy(coords)}><Copy size={16}/>{copied?t('Copied!'):t('Copy coordinates')}</button><button className="button whatsapp-button" onClick={shareOnWhatsApp}><MessageCircle size={17}/>{t('Share on WhatsApp')}</button></div><a className="map-link" href={`https://www.google.com/maps?q=${result.latitude},${result.longitude}`} target="_blank" rel="noreferrer"><Navigation size={15}/> {t('Open in Google Maps')} <ArrowUpRight size={14}/></a></>}
-              </div>}
+        </section>
+
+        <MapExplorer
+          t={t}
+          apiBase={apiBase}
+          point={mapPoint}
+          pin={mapPin}
+          language={language}
+        />
+
+        <section className="steps-section" id="how-it-works">
+          <div className="eyebrow">{t("A SMALL CODE. A BIG POSSIBILITY.")}</div>
+          <h2>
+            {t("Location, simplified in")} <span>{t("three steps.")}</span>
+          </h2>
+          <div className="steps-grid">
+            <article className="step-card">
+              <div className="step-visual visual-one">
+                <MapPin size={26} />
+                <span className="mini-coord">28.6139° N</span>
+              </div>
+              <span className="step-label">{t("STEP 01")}</span>
+              <h3>{t("Choose a place")}</h3>
+              <p>
+                {t(
+                  "Start with coordinates or use your device’s current location.",
+                )}
+              </p>
+            </article>
+            <article className="step-card">
+              <div className="step-visual visual-two">
+                <ScanLine size={27} />
+                <div className="mini-code">4T3 · 96F · 42L7</div>
+              </div>
+              <span className="step-label">{t("STEP 02")}</span>
+              <h3>{t("Generate a DIGIPIN")}</h3>
+              <p>
+                {t(
+                  "The official open-source algorithm maps the point into a compact code.",
+                )}
+              </p>
+            </article>
+            <article className="step-card">
+              <div className="step-visual visual-three">
+                <Navigation size={25} />
+                <div className="mini-map-dot"></div>
+                <div className="mini-route"></div>
+              </div>
+              <span className="step-label">{t("STEP 03")}</span>
+              <h3>{t("Share with confidence")}</h3>
+              <p>
+                {t(
+                  "Copy your code or decode an existing DIGIPIN into coordinates.",
+                )}
+              </p>
+            </article>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <MapExplorer t={t} apiBase={apiBase} point={mapPoint} pin={mapPin} language={language} />
-
-      <section className="steps-section" id="how-it-works"><div className="eyebrow">{t('A SMALL CODE. A BIG POSSIBILITY.')}</div><h2>{t('Location, simplified in')} <span>{t('three steps.')}</span></h2><div className="steps-grid"><article className="step-card"><div className="step-visual visual-one"><MapPin size={26}/><span className="mini-coord">28.6139° N</span></div><span className="step-label">{t('STEP 01')}</span><h3>{t('Choose a place')}</h3><p>{t('Start with coordinates or use your device’s current location.')}</p></article><article className="step-card"><div className="step-visual visual-two"><ScanLine size={27}/><div className="mini-code">4T3 · 96F · 42L7</div></div><span className="step-label">{t('STEP 02')}</span><h3>{t('Generate a DIGIPIN')}</h3><p>{t('The official open-source algorithm maps the point into a compact code.')}</p></article><article className="step-card"><div className="step-visual visual-three"><Navigation size={25}/><div className="mini-map-dot"></div><div className="mini-route"></div></div><span className="step-label">{t('STEP 03')}</span><h3>{t('Share with confidence')}</h3><p>{t('Copy your code or decode an existing DIGIPIN into coordinates.')}</p></article></div></section>
-
-      <section className="about-banner" id="about"><div className="about-emblem"><ScanLine size={30}/></div><div className="about-copy"><div className="eyebrow">{t('BUILT ON OPEN SOURCE')}</div><h2>{t('Designed for a more connected India.')}</h2><p>{t('DIGIPIN is a geospatial addressing grid initiative by the Department of Posts, Government of India. This independent explorer uses the published open-source implementation to make its encoding and decoding functions easier to try.')}</p><a href="https://github.com/INDIAPOST-gov/digipin" target="_blank" rel="noreferrer" className="about-link">{t('Explore the official repository')} <ArrowUpRight size={16}/></a></div><div className="about-orbit"></div></section>
-    </main>
-    <footer className="footer"><a className="footer-brand" href="#"><span className="brand-mark small"><ScanLine size={17}/></span><b>{t('DIGIPIN EXPLORER')}</b></a><span>{t('Independent community interface · Not an official India Post website')}</span><a href="https://github.com/INDIAPOST-gov/digipin" target="_blank" rel="noreferrer"><Github size={15}/> {t('Open-source foundation')}</a></footer>
-  </div>
+        <section className="about-banner" id="about">
+          <div className="about-emblem">
+            <ScanLine size={30} />
+          </div>
+          <div className="about-copy">
+            <div className="eyebrow">{t("BUILT ON OPEN SOURCE")}</div>
+            <h2>{t("Designed for a more connected India.")}</h2>
+            <p>
+              {t(
+                "DIGIPIN is a geospatial addressing grid initiative by the Department of Posts, Government of India. This independent explorer uses the published open-source implementation to make its encoding and decoding functions easier to try.",
+              )}
+            </p>
+            <a
+              href="https://github.com/INDIAPOST-gov/digipin"
+              target="_blank"
+              rel="noreferrer"
+              className="about-link"
+            >
+              {t("Explore the official repository")} <ArrowUpRight size={16} />
+            </a>
+          </div>
+          <div className="about-orbit"></div>
+        </section>
+        {/* DIGIPIN technology and collaboration section */}
+        <DigipinTechnology />
+      </main>
+      <footer className="footer">
+        <a className="footer-brand" href="#">
+          <span className="brand-mark small">
+            <ScanLine size={17} />
+          </span>
+          <b>{t("DIGIPIN EXPLORER")}</b>
+        </a>
+        <span>
+          {t(
+            "Independent community interface · Not an official India Post website",
+          )}
+        </span>
+        <a
+          href="https://github.com/INDIAPOST-gov/digipin"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Github size={15} /> {t("Open-source foundation")}
+        </a>
+      </footer>
+    </div>
+  );
 }
 createRoot(document.getElementById('root')).render(<App />);
