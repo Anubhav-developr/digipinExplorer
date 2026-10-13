@@ -249,28 +249,43 @@ export default function MapExplorer({ t, apiBase, point, pin, language }) {
       zoomControl: true,
       scrollWheelZoom: true,
       preferCanvas: true,
+      minZoom: 3,
     }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
 
     const streetLayer = L.tileLayer(
       "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
-        maxZoom: 19,
+        minZoom: 3,
+        maxZoom: 22,
+        maxNativeZoom: 19,
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>',
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>',
       },
     );
 
     const satelliteLayer = L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       {
-        maxZoom: 19,
+        minZoom: 3,
+        maxZoom: 18,
+        maxNativeZoom: 18,
         attribution:
-          "Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+          "Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community",
       },
     );
 
-    // Street Map default rahega.
     streetLayer.addTo(map);
+
+    L.control
+      .layers(
+        {
+          "Street Map": streetLayer,
+          "Satellite (Esri)": satelliteLayer,
+        },
+        undefined,
+        { position: "topright", collapsed: false },
+      )
+      .addTo(map);
 
     // Top-right mein Street / Satellite selector.
     L.control
@@ -430,15 +445,35 @@ export default function MapExplorer({ t, apiBase, point, pin, language }) {
     const sourceMarker = L.marker(source, {
       icon: pinIcon("A", "source"),
       riseOnHover: true,
+      keyboard: true,
+      title: `Point A — ${route.fromDigipin}`,
     }).bindPopup(
       `<strong>${t("Route origin")}</strong><br>${escapeHtml(route.fromDigipin)}`,
     );
+
+    sourceMarker.on("click", () => {
+      map.flyTo(source, Math.min(18, map.getMaxZoom()), {
+        animate: true,
+        duration: 1,
+      });
+    });
+
     const destinationMarker = L.marker(destination, {
       icon: pinIcon("B", "destination"),
       riseOnHover: true,
+      keyboard: true,
+      title: `Point B — ${route.toDigipin}`,
     }).bindPopup(
       `<strong>${t("Route destination")}</strong><br>${escapeHtml(route.toDigipin)}`,
     );
+
+    destinationMarker.on("click", () => {
+      map.flyTo(destination, Math.min(18, map.getMaxZoom()), {
+        animate: true,
+        duration: 1,
+      });
+    });
+
     const roadLine = L.geoJSON(route.geometry, {
       style: {
         color: "#1769aa",
