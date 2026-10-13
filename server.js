@@ -51,26 +51,51 @@ app.post("/api/route", async (req, res) => {
       req.body.preference === "fastest" ? "fastest" : "shortest";
     const source = getLatLngFromDigiPin(fromDigipin);
     const destination = getLatLngFromDigiPin(toDigipin);
-    const upstream = await fetch(
-      "https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson",
-      {
-        method: "POST",
-        headers: {
-          Authorization: apiKey,
-          "Content-Type": "application/json",
-          Accept: "application/geo+json, application/json",
-        },
-        body: JSON.stringify({
-          coordinates: [
-            [Number(source.longitude), Number(source.latitude)],
-            [Number(destination.longitude), Number(destination.latitude)],
-          ],
-          preference,
-          instructions: false,
-          units: "m",
-        }),
+   
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+let upstream;
+
+try {
+  upstream = await fetch(
+    "https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson",
+    {
+      method: "POST",
+      headers: {
+        Authorization: apiKey,
+        "Content-Type": "application/json",
+        Accept: "application/geo+json, application/json",
       },
-    );
+      body: JSON.stringify({
+        coordinates: [
+          [Number(source.longitude), Number(source.latitude)],
+          [Number(destination.longitude), Number(destination.latitude)],
+        ],
+        preference,
+        instructions: false,
+        units: "m",
+      }),
+      signal: controller.signal,
+    },
+  );
+} catch (error) {
+  if (error.name === "AbortError") {
+    return res.status(504).json({
+      error:
+        "Routing provider timed out after 15 seconds. Please try again shortly.",
+    });
+  }
+
+  console.error("Routing network error:", error.message);
+
+  return res.status(502).json({
+    error: "Unable to connect to the routing provider. Please try again.",
+  });
+} finally {
+  clearTimeout(timeoutId);
+}
+
     const responseText = await upstream.text();
 
     let data = {};
