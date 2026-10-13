@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { MapPin, ArrowRightLeft, Copy, Check, LocateFixed, ArrowUpRight, ShieldCheck, Compass, ScanLine, Navigation, Github, Menu, X, Sparkles, ChevronDown, ExternalLink, Languages, MessageCircle } from 'lucide-react';
 import './style.css';
 import DigipinTechnology from "./DigipinTechnology";
-import MapExplorer from './MapExplorer';
+import MapExplorer from './MapExplorer';  
 
 const translations = {
   hi: {

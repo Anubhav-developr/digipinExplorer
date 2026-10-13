@@ -1,6 +1,8 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+require("dotenv").config();
+console.log("ORS key loaded:", Boolean(process.env.ORS_API_KEY));
 const { getDigiPin, getLatLngFromDigiPin } = require("./src/digipin-core");
 const app = express();
 app.use(cors());
@@ -28,12 +30,10 @@ app.post("/api/route", async (req, res) => {
   try {
     const apiKey = process.env.ORS_API_KEY;
     if (!apiKey) {
-      return res
-        .status(503)
-        .json({
-          error:
-            "Routing is not configured yet. Add ORS_API_KEY to your Render backend environment variables, then redeploy.",
-        });
+      return res.status(503).json({
+        error:
+          "Routing is not configured yet. Add ORS_API_KEY to your Render backend environment variables, then redeploy.",
+      });
     }
     const fromDigipin = String(req.body.fromDigipin || "")
       .trim()
@@ -78,12 +78,10 @@ app.post("/api/route", async (req, res) => {
     const feature = data?.features?.[0];
     const summary = feature?.properties?.summary;
     if (!feature?.geometry || !summary)
-      return res
-        .status(502)
-        .json({
-          error:
-            "The routing provider returned no road route for these locations.",
-        });
+      return res.status(502).json({
+        error:
+          "The routing provider returned no road route for these locations.",
+      });
     res.json({
       fromDigipin,
       toDigipin,
@@ -103,12 +101,9 @@ app.post("/api/route", async (req, res) => {
       preference,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        error:
-          error.message || "Unable to calculate a route for these DIGIPINs.",
-      });
+    res.status(400).json({
+      error: error.message || "Unable to calculate a route for these DIGIPINs.",
+    });
   }
 });
 
