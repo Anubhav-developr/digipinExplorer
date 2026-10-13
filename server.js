@@ -46,7 +46,7 @@ app.post("/api/route", async (req, res) => {
     const source = getLatLngFromDigiPin(fromDigipin);
     const destination = getLatLngFromDigiPin(toDigipin);
     const upstream = await fetch(
-      "https://api.openrouteservice.org/v2/directions/driving-car/geojson",
+      "https://api.heigit.org/openrouteservice/v2/directions/driving-car/geojson",
       {
         method: "POST",
         headers: {

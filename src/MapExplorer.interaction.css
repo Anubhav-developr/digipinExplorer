@@ -1,0 +1,155 @@
+/* DIGIPIN selection popup and map legend enhancements */
+.digipin-map-canvas .leaflet-popup-content-wrapper {
+  border: 1px solid #e6e1d6;
+  border-radius: 14px;
+  box-shadow: 0 12px 34px rgba(31, 45, 35, 0.18);
+}
+
+.digipin-map-canvas .leaflet-popup-content {
+  min-width: 190px;
+  margin: 13px 15px;
+  font-family: inherit;
+}
+
+.digipin-popup {
+  display: grid;
+  gap: 8px;
+  color: #273a2d;
+  font-family: inherit;
+}
+
+.digipin-popup-title {
+  color: #6c776c;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.digipin-popup-code {
+  color: #1c5c40;
+  font-size: 17px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+.digipin-popup-coordinates {
+  color: #637064;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.digipin-popup-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+  margin-top: 3px;
+}
+
+.digipin-popup-button {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border: 1px solid #dce4d9;
+  border-radius: 8px;
+  background: #f8faf6;
+  color: #315841;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.digipin-popup-button:hover {
+  border-color: #a8c4ac;
+  background: #edf5eb;
+  text-decoration: none;
+}
+
+.digipin-popup-button:active {
+  transform: translateY(1px);
+}
+
+.digipin-popup-button-primary {
+  border-color: #286749;
+  background: #286749;
+  color: #fff;
+}
+
+.digipin-popup-button-primary:hover {
+  border-color: #1d5138;
+  background: #1d5138;
+  color: #fff;
+}
+
+.digipin-popup-link {
+  box-sizing: border-box;
+}
+
+.digipin-popup-note {
+  margin: 0;
+  color: #6c776c;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.legend-location {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fffdf8;
+  border-radius: 50% 50% 50% 2px;
+  background: #b77939;
+  box-shadow: 0 0 0 1px #b77939;
+  transform: rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .digipin-popup-button {
+    transition: none;
+  }
+}
+
+/* Keep the requested A-to-B pair explicit in the route result card. */
+.route-endpoints {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.route-endpoints > div {
+  min-width: 0;
+  padding: 10px 11px;
+  border: 1px solid rgba(35, 99, 72, 0.14);
+  border-radius: 10px;
+  background: rgba(35, 99, 72, 0.045);
+}
+
+.route-endpoints small {
+  display: block;
+  margin-bottom: 5px;
+  color: #66776c;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.route-endpoints strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #18362c;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 420px) {
+  .route-endpoints { grid-template-columns: minmax(0, 1fr); }
+}
