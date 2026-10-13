@@ -5,7 +5,13 @@ require("dotenv").config();
 console.log("ORS key loaded:", Boolean(process.env.ORS_API_KEY));
 const { getDigiPin, getLatLngFromDigiPin } = require("./src/digipin-core");
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: ["https://digipinexplorer.vercel.app"],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "dist")));
 app.post("/api/digipin/encode", (req, res) => {
