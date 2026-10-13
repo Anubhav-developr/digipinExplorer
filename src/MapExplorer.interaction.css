@@ -175,3 +175,82 @@
   border-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
 }
+
+/* Premium Street / Satellite layer switcher */
+.leaflet-control-layers {
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 26px rgba(13, 38, 28, 0.18) !important;
+  color: #163c2c !important;
+  font-family: inherit;
+  transition:
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.leaflet-control-layers:hover {
+  box-shadow: 0 10px 30px rgba(13, 38, 28, 0.24) !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 6px !important;
+  min-width: 154px;
+}
+
+.leaflet-control-layers-list {
+  margin: 0 !important;
+}
+
+.leaflet-control-layers-base label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 !important;
+  padding: 10px 12px;
+  border-radius: 9px;
+  color: #264b3a;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.leaflet-control-layers-base label:hover {
+  background: #edf4ee;
+}
+
+.leaflet-control-layers-base label:has(input:checked) {
+  background: #174b35;
+  color: #ffffff;
+}
+
+.leaflet-control-layers-base input {
+  accent-color: #d4a83f;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.leaflet-control-layers-separator {
+  border-top: 1px solid #e5ebe6 !important;
+  margin: 5px 8px !important;
+}
+
+@media (max-width: 600px) {
+  .leaflet-control-layers-expanded {
+    min-width: 138px;
+  }
+
+  .leaflet-control-layers-base label {
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+}
+
