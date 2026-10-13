@@ -287,17 +287,17 @@ export default function MapExplorer({ t, apiBase, point, pin, language }) {
       )
       .addTo(map);
 
-    // Top-right mein Street / Satellite selector.
-    L.control
-      .layers(
-        {
-          "Street Map": streetLayer,
-          "Satellite (Esri)": satelliteLayer,
-        },
-        undefined,
-        { position: "topright", collapsed: false },
-      )
-      .addTo(map);
+    // // Top-right mein Street / Satellite selector.
+    // L.control
+    //   .layers(
+    //     {
+    //       "Street Map": streetLayer,
+    //       "Satellite (Esri)": satelliteLayer,
+    //     },
+    //     undefined,
+    //     { position: "topright", collapsed: false },
+    //   )
+    //   .addTo(map);
 
     mapRef.current = map;
     const resize = () => map.invalidateSize();
