@@ -65,15 +65,31 @@ app.post("/api/route", async (req, res) => {
         }),
       },
     );
-    const data = await upstream.json().catch(() => ({}));
+    const responseText = await upstream.text();
+
+    let data = {};
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      data = { rawResponse: responseText };
+    }
+
+    console.log("ORS HTTP status:", upstream.status);
+    console.log("ORS response:", JSON.stringify(data));
+
     if (!upstream.ok) {
       const detail =
         data?.error?.message ||
+        data?.error?.details ||
+        (typeof data?.error === "string" ? data.error : null) ||
         data?.message ||
-        "The routing provider rejected the request.";
-      return res
-        .status(upstream.status === 429 ? 429 : 502)
-        .json({ error: `Route service error: ${detail}` });
+        data?.rawResponse ||
+        "No detailed error returned by routing provider.";
+
+      return res.status(502).json({
+        error: `Route service error: ${detail}`,
+        providerStatus: upstream.status,
+      });
     }
     const feature = data?.features?.[0];
     const summary = feature?.properties?.summary;
